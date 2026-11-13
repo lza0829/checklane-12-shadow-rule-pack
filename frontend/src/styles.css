@@ -57,6 +57,14 @@ a { color: inherit; text-decoration: none; }
 }
 .tag.ok { background: #d9f0e1; color: var(--ok); }
 .tag.danger { background: #f8d9d7; color: var(--danger); }
+.tag.shadow { background: #e3e0f5; color: #4a3f8f; }
+.shadow-text { color: #4a3f8f; font-weight: 600; }
+button.ghost {
+  background: #fff;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+button.ghost:disabled { opacity: 0.45; }
 button, .btn {
   background: var(--accent);
   color: white;

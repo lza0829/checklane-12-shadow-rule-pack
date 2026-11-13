@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { getJSON, postJSON } from '../api'
+import ShadowDiffPanel from '../components/ShadowDiffPanel.vue'
 const datasets = ref([])
 const datasetId = ref(1)
 const busy = ref(false)
@@ -26,7 +27,7 @@ async function run() {
   <div class="page">
     <header>
       <h1>入检台</h1>
-      <p class="muted">装载夹具 → 执行规则 → 隔离失败行 → 放行通过行到精选区</p>
+      <p class="muted">装载夹具 → 主/影子两套规则都评估 → 处置只认主集 → 隔离失败行、放行通过行到精选区；影子命中只做差分观察</p>
     </header>
     <div class="panel row">
       <label>数据集
@@ -41,9 +42,10 @@ async function run() {
       <h3>批次 #{{ last.id }} <span class="tag" :class="last.status === 'released' ? 'ok' : ''">{{ last.status }}</span></h3>
       <div class="tiles">
         <div class="tile"><div class="hero-num">{{ last.scanned_count }}</div><div class="muted">扫描</div></div>
-        <div class="tile"><div class="hero-num">{{ last.passed_count }}</div><div class="muted">通过</div></div>
-        <div class="tile"><div class="hero-num">{{ last.quarantined_count }}</div><div class="muted">隔离</div></div>
+        <div class="tile"><div class="hero-num">{{ last.passed_count }}</div><div class="muted">通过（主集）</div></div>
+        <div class="tile"><div class="hero-num">{{ last.quarantined_count }}</div><div class="muted">隔离（主集）</div></div>
         <div class="tile"><div class="hero-num">{{ last.released_count }}</div><div class="muted">签发</div></div>
+        <div class="tile"><div class="hero-num shadow-text">{{ last.shadow_hit_total ?? 0 }}</div><div class="muted">影子命中（不处置）</div></div>
       </div>
       <h4>对账</h4>
       <table>
@@ -56,18 +58,7 @@ async function run() {
           </tr>
         </tbody>
       </table>
-      <h4>行清单</h4>
-      <table>
-        <thead><tr><th>#</th><th>键</th><th>处置</th><th>命中</th></tr></thead>
-        <tbody>
-          <tr v-for="r in last.rows" :key="r.id">
-            <td>{{ r.row_no }}</td>
-            <td>{{ r.entity_key }}</td>
-            <td><span class="tag" :class="r.disposition === 'pass' ? 'ok' : 'danger'">{{ r.disposition }}</span></td>
-            <td class="muted">{{ r.rule_hits.map(h => h.name).join('；') || '—' }}</td>
-          </tr>
-        </tbody>
-      </table>
     </div>
+    <ShadowDiffPanel v-if="last" :report="last.report" :rows="last.rows" />
   </div>
 </template>

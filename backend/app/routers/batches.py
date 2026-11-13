@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 from app.db import connect
 from app.repositories import batches as batch_repo
+from app.repositories import shadow_hits as shadow_repo
 
 router = APIRouter(tags=["batches"])
 
@@ -23,6 +24,7 @@ def get_batch(batch_id: int):
         if not detail:
             raise HTTPException(404, "batch not found")
         detail["rows"] = batch_repo.list_batch_rows(conn, batch_id)
+        detail["shadow_hits"] = shadow_repo.list_by_batch(conn, batch_id)
         return detail
     finally:
         conn.close()

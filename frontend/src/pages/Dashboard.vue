@@ -18,6 +18,8 @@ onMounted(async () => {
     <div class="tiles" v-if="stats">
       <div class="tile"><div class="hero-num">{{ stats.dataset_count }}</div><div class="muted">数据集</div></div>
       <div class="tile"><div class="hero-num">{{ stats.enabled_rule_count }}</div><div class="muted">启用规则</div></div>
+      <div class="tile"><div class="hero-num">{{ stats.main_rule_count }}</div><div class="muted">主集规则</div></div>
+      <div class="tile"><div class="hero-num shadow-text">{{ stats.shadow_rule_count }}</div><div class="muted">影子规则（暗跑）</div></div>
       <div class="tile"><div class="hero-num">{{ stats.batch_count }}</div><div class="muted">入检批次</div></div>
       <div class="tile"><div class="hero-num">{{ stats.curated_count }}</div><div class="muted">精选行</div></div>
       <div class="tile"><div class="hero-num">{{ stats.quarantine_count }}</div><div class="muted">隔离行</div></div>
